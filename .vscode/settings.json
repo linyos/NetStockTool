@@ -1,0 +1,18 @@
+{
+  "editor.formatOnSave": true,
+  "github.copilot.chat.enable": true,
+  "github.copilot.chat.completions.enable": true,
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "text": "Always response in #zh-tw."
+    }
+  ],
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": "./github.instructions/copilot-commit-message-instructions.instructions.md"
+    },
+    {
+      "text": "Always response in #zh-tw."
+    }
+  ],
+}

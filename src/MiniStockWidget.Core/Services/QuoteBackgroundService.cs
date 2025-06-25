@@ -15,11 +15,14 @@ namespace MiniStockWidget.Core.Services
     /// </summary>
     public class QuoteBackgroundService : BackgroundService
     {
+
+        // 日誌記錄
+
         private readonly ILogger<QuoteBackgroundService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private TimeSpan _updateInterval = TimeSpan.FromSeconds(30);
         private List<string> _watchlist = new List<string> { "AAPL", "MSFT", "GOOGL", "TSLA", "2330.TW" };
-        
+
         /// <summary>
         /// 最新報價更新事件
         /// </summary>
@@ -36,6 +39,7 @@ namespace MiniStockWidget.Core.Services
         /// </summary>
         public void SetUpdateInterval(TimeSpan interval)
         {
+            // 設定更新間隔
             if (interval.TotalSeconds < 5)
             {
                 throw new ArgumentException("Update interval cannot be less than 5 seconds", nameof(interval));
@@ -95,12 +99,12 @@ namespace MiniStockWidget.Core.Services
             {
                 using var scope = _serviceProvider.CreateScope();
                 var quoteService = scope.ServiceProvider.GetRequiredService<IQuoteService>();
-                
+
                 var quotes = await quoteService.GetQuotesAsync(_watchlist, cancellationToken);
                 var quotesList = new List<StockQuote>(quotes);
-                
+
                 _logger.LogInformation("Fetched {Count} quotes", quotesList.Count);
-                
+
                 // 觸發更新事件
                 QuotesUpdated?.Invoke(this, quotesList);
             }
