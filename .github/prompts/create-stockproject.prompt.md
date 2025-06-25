@@ -44,6 +44,33 @@ Expected output and any relevant constraints for this task.
 
 ---
 
+
+## 2.1 UI 架構與建立步驟（補充）
+
+### 建立 WPF UI 專案與 MVVM 架構
+
+1. **建立 WPF 專案**
+   ```shell
+   dotnet new wpf -n MiniStockWidget.App -f net8.0
+   dotnet sln add src/MiniStockWidget.App/MiniStockWidget.App.csproj
+   ```
+2. **參考 Core 專案**
+   ```shell
+   dotnet add src/MiniStockWidget.App/MiniStockWidget.App.csproj reference src/MiniStockWidget.Core/MiniStockWidget.Core.csproj
+   ```
+3. **安裝 MVVM Toolkit 與 LiveCharts2**
+   ```shell
+   dotnet add src/MiniStockWidget.App/MiniStockWidget.App.csproj package CommunityToolkit.Mvvm
+   dotnet add src/MiniStockWidget.App/MiniStockWidget.App.csproj package LiveChartsCore.SkiaSharpView.WPF
+   ```
+4. **建立 ViewModel 與 View**
+   - 在 `ViewModels/` 建立 `MainViewModel.cs`，繼承 `ObservableObject`。
+   - 在 `Views/` 建立 `MainWindow.xaml`，用 LiveCharts2 畫折線圖，資料繫結到 ViewModel。
+5. **DI 註冊與啟動**
+   - 在 `App.xaml.cs` 依下方範例註冊 DI 與 HostedService。
+
+---
+
 ## 3. Solution 結構
 
 ```
