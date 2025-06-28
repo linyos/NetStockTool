@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\MiniStockWidget.Core\MiniStockWidget.Core.csproj" />
-    <ProjectReference Include="..\..\src\MiniStockWidget.App\MiniStockWidget.App.csproj" />
   </ItemGroup>
 
 </Project>
