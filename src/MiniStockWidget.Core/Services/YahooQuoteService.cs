@@ -42,13 +42,13 @@ namespace MiniStockWidget.Core.Services
                 try
                 {
                     using var httpClient = _httpClientFactory.CreateClient("Yahoo");
-                    
+
                     // 實際 API 呼叫 - 這裡是範例
                     // var response = await httpClient.GetAsync($"v8/finance/quote?symbols={symbol}", cancellationToken);
                     // response.EnsureSuccessStatusCode();
                     // var content = await response.Content.ReadAsStringAsync(cancellationToken);
                     // var result = JsonSerializer.Deserialize<YahooResponse>(content);
-                    
+
                     // 模擬資料 - 實際實作需要解析 Yahoo Finance API 回傳的 JSON
                     return new StockQuote
                     {
@@ -66,7 +66,7 @@ namespace MiniStockWidget.Core.Services
                     retryCount++;
                     _logger.LogWarning(ex, "Error fetching quote for {Symbol}. Retry {RetryCount}/{MaxRetry}",
                         symbol, retryCount, _maxRetryCount);
-                    
+
                     if (retryCount < _maxRetryCount)
                     {
                         // 指數退避 (Exponential backoff)
@@ -88,7 +88,7 @@ namespace MiniStockWidget.Core.Services
             {
                 tasks.Add(GetQuoteAsync(symbol, cancellationToken));
             }
-            
+
             return await Task.WhenAll(tasks);
         }
 
@@ -106,8 +106,10 @@ namespace MiniStockWidget.Core.Services
             {
                 try
                 {
+
+
                     using var httpClient = _httpClientFactory.CreateClient("Yahoo");
-                    
+
                     // 實際 API 呼叫 - 這裡是範例
                     // var endDate = DateTimeOffset.UtcNow;
                     // var startDate = endDate.AddDays(-days);
@@ -117,18 +119,18 @@ namespace MiniStockWidget.Core.Services
                     // response.EnsureSuccessStatusCode();
                     // var content = await response.Content.ReadAsStringAsync(cancellationToken);
                     // 解析歷史資料 JSON 並添加到 quote.HistoricalPrices
-                    
+
                     // 模擬歷史資料
                     var random = new Random();
                     var basePrice = 100.0m;
                     var prices = new List<HistoricalPrice>();
-                    
+
                     for (int i = 0; i < days; i++)
                     {
                         var date = DateTime.Now.AddDays(-i);
                         var price = basePrice + (decimal)(random.NextDouble() * 10 - 5);
                         var volume = random.Next(100000, 10000000);
-                        
+
                         prices.Add(new HistoricalPrice
                         {
                             Timestamp = date,
@@ -146,7 +148,7 @@ namespace MiniStockWidget.Core.Services
                     retryCount++;
                     _logger.LogWarning(ex, "Error fetching historical data for {Symbol}. Retry {RetryCount}/{MaxRetry}",
                         symbol, retryCount, _maxRetryCount);
-                    
+
                     if (retryCount < _maxRetryCount)
                     {
                         await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retryCount)), cancellationToken);

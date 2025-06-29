@@ -26,13 +26,24 @@ namespace MiniStockView
                 .ConfigureServices((context, services) =>
                 {
                     // 註冊核心服務
-                    services.AddHttpClient("Yahoo", client =>
+                    // services.AddHttpClient("Yahoo", client =>
+                    // {
+                    //     client.DefaultRequestHeaders.Add("User-Agent",
+                    //         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+                    // });
+                    // services.AddSingleton<IQuoteService, YahooQuoteService>();
+
+
+                    services.AddHttpClient(); // 這行是必要的，提供 IHttpClientFactory
+                    services.AddHttpClient("TWSE", client =>
                     {
                         client.DefaultRequestHeaders.Add("User-Agent",
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+                        client.Timeout = TimeSpan.FromSeconds(30); // 設定超時時間
                     });
+                    services.AddScoped<IQuoteService, TwseQuoteService>(); // 使用台灣證交所服務
 
-                    services.AddSingleton<IQuoteService, YahooQuoteService>();
+
                     services.AddSingleton<QuoteCache>();
                     services.AddSingleton<QuoteBackgroundService>();
 

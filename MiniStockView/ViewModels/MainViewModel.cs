@@ -26,10 +26,10 @@ namespace MiniStockView.ViewModels
         private readonly DispatcherTimer _timeUpdateTimer;
 
         [ObservableProperty]
-        private string _symbol = "TSLA";
+        private string _symbol = "0050.TW"; // 預設股票代號
 
         [ObservableProperty]
-        private string _companyName = "Tesla Inc.";
+        private string _companyName = "元大台灣50";
 
         [ObservableProperty]
         private decimal _currentPrice = 0;
@@ -64,7 +64,7 @@ namespace MiniStockView.ViewModels
         {
             new Axis
             {
-                Name = "時間",
+                Name = "Time",
                 NamePaint = new SolidColorPaint(SKColors.White),
                 LabelsPaint = new SolidColorPaint(SKColors.LightGray),
                 TextSize = 10,
@@ -80,7 +80,7 @@ namespace MiniStockView.ViewModels
         {
             new Axis
             {
-                Name = "價格 (USD)",
+                Name = "Price (TWD)",
                 NamePaint = new SolidColorPaint(SKColors.White),
                 LabelsPaint = new SolidColorPaint(SKColors.LightGray),
                 TextSize = 10,

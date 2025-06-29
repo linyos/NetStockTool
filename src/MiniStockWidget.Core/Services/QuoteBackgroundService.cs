@@ -19,9 +19,14 @@ namespace MiniStockWidget.Core.Services
         // 日誌記錄
 
         private readonly ILogger<QuoteBackgroundService> _logger;
+        // 服務提供者
         private readonly IServiceProvider _serviceProvider;
+
+        // 更新間隔，默認為30秒
         private TimeSpan _updateInterval = TimeSpan.FromSeconds(30);
-        private List<string> _watchlist = new List<string> { "AAPL", "MSFT", "GOOGL", "TSLA", "2330.TW" };
+
+        // 監視清單，默認包含一些熱門股票
+        private List<string> _watchlist = new List<string> { "2330.TW", "0050.TW" };
 
         /// <summary>
         /// 最新報價更新事件
