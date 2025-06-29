@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -88,10 +89,22 @@ namespace MiniStockWidget.Core.Services
 
                     using var httpClient = _httpClientFactory.CreateClient("TWSE");
                     httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
-                    // api get stock data
-                    var response = await httpClient.GetStringAsync(url);
+                    httpClient.DefaultRequestHeaders.Add("Accept-Charset", "UTF-8");
+                    httpClient.DefaultRequestHeaders.Add("Accept", "application/json, text/plain, */*");
+
+                    // 使用 GetByteArrayAsync 然後手動解碼為 UTF-8，確保中文正確處理
+                    var responseBytes = await httpClient.GetByteArrayAsync(url);
+                    var response = Encoding.UTF8.GetString(responseBytes);
+
+                    // 設置 JSON 序列化選項以正確處理中文
+                    var jsonOptions = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    };
+
                     // convert json to object
-                    var apiResponse = JsonSerializer.Deserialize<TwseApiResponse>(response);
+                    var apiResponse = JsonSerializer.Deserialize<TwseApiResponse>(response, jsonOptions);
 
                     if (apiResponse == null || apiResponse.Status != "OK" || apiResponse.Data.Count == 0)
                     {

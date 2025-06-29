@@ -4,6 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- UTF-8編碼支援 -->
+    <FileEncoding>UTF-8</FileEncoding>
+    <Utf8Output>true</Utf8Output>
   </PropertyGroup>
 
   <ItemGroup>

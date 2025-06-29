@@ -11,6 +11,7 @@ using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
 using MiniStockWidget.Core.Models;
 using MiniStockWidget.Core.Services;
@@ -65,6 +66,7 @@ namespace MiniStockView.ViewModels
         /// </summary>
         public Axis[] XAxes { get; private set; } = default!;
 
+        /// <summary>
         /// <summary>
         /// Y 軸配置
         /// </summary>
@@ -147,8 +149,8 @@ namespace MiniStockView.ViewModels
             var lineSeries = new LineSeries<ObservablePoint>
             {
                 Values = new ObservableCollection<ObservablePoint>(),
-                Name = "股價走勢",
-                GeometrySize = 3,
+                Name = "Price:",
+                GeometrySize = 4, // Slightly increase the point size for easier tooltip triggering
                 GeometryStroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 1.5f },
                 GeometryFill = new SolidColorPaint(SKColors.White),
                 Stroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 2 },
@@ -157,10 +159,14 @@ namespace MiniStockView.ViewModels
                     new SKPoint(0, 0),
                     new SKPoint(0, 1)
                 ),
-                LineSmoothness = 0.3, // 使線條更平滑
+                LineSmoothness = 0.3, // Make the line smoother
                 EnableNullSplitting = false,
-                DataLabelsSize = 0, // 隱藏數據標籤
-                DataLabelsPaint = null // 不顯示數據標籤
+                DataLabelsSize = 0, // Hide data labels
+                DataLabelsPaint = null, // Do not show data labels
+                XToolTipLabelFormatter = null,
+                YToolTipLabelFormatter = null
+
+
             };
 
             Series.Add(lineSeries);

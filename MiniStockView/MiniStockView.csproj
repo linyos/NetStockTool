@@ -9,6 +9,9 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <FileEncoding>UTF-8</FileEncoding>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <!-- 確保UTF-8編碼支援 -->
+    <Utf8Output>true</Utf8Output>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>

@@ -14,7 +14,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
-        FontFamily="Microsoft JhengHei, Arial, sans-serif"
+        FontFamily="Microsoft JhengHei, Microsoft YaHei, SimSun, Arial Unicode MS, sans-serif"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
     <Window.Resources>
@@ -23,7 +23,7 @@
         <converters:CurrencyConverter x:Key="CurrencyConverter"/>
         <converters:PercentageConverter x:Key="PercentageConverter"/>
 
-        <!-- 右鍵選單 -->
+
         <ContextMenu x:Key="WindowContextMenu">
             <MenuItem Header="刷新資料"
                       Command="{Binding RefreshCommand}">
@@ -127,8 +127,9 @@
 
                 <!-- 變化資訊 -->
                 <StackPanel Orientation="Vertical"
-                            HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
+                            HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
                         <TextBlock Text="{Binding ChangeIcon}"
                                    FontSize="12"
                                    Foreground="{Binding PriceChange, Converter={StaticResource PriceChangeColorConverter}}"
@@ -142,7 +143,7 @@
                     <TextBlock Text="{Binding ChangePercent, Converter={StaticResource PercentageConverter}}"
                                FontSize="12"
                                Foreground="{Binding PriceChange, Converter={StaticResource PriceChangeColorConverter}}"
-                               HorizontalAlignment="Center"/>
+                               HorizontalAlignment="Right"/>
                 </StackPanel>
             </Grid>
 
@@ -156,8 +157,7 @@
                 <lvc:CartesianChart Series="{Binding Series}"
                                     XAxes="{Binding XAxes}"
                                     YAxes="{Binding YAxes}"
-                                    Background="Transparent"
-                                    TooltipPosition="Hidden"/>
+                                    Background="Transparent"/>
             </Border>
 
             <!-- 狀態列 -->
@@ -182,7 +182,7 @@
                                FontSize="10"
                                Foreground="#FF666666"
                                Margin="0,0,8,0"/>
-                    <TextBlock Text="{Binding CurrentTime, StringFormat='現在：{0}'}"
+                    <TextBlock Text="{Binding CurrentTime, StringFormat='現在時間：{0}'}"
                                FontSize="10"
                                Foreground="#FF4CAF50"/>
                 </StackPanel>
