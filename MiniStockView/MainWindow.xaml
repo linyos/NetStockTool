@@ -14,6 +14,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
+        FontFamily="Microsoft JhengHei, Arial, sans-serif"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
     <Window.Resources>
@@ -119,27 +120,14 @@
                     </Border>
                 </Grid>
             </Grid>
-
             <!-- 價格資訊區域 -->
             <Grid Grid.Row="1"
                   Margin="0,0,0,12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- 當前價格 -->
-                <TextBlock Grid.Column="0"
-                           Text="{Binding CurrentPrice, Converter={StaticResource CurrencyConverter}}"
-                           FontSize="24"
-                           FontWeight="Bold"
-                           Foreground="White"
-                           VerticalAlignment="Center"/>
+                <!-- 當前價格已隱藏 -->
 
                 <!-- 變化資訊 -->
-                <StackPanel Grid.Column="1"
-                            Orientation="Vertical"
-                            HorizontalAlignment="Right">
+                <StackPanel Orientation="Vertical"
+                            HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding ChangeIcon}"
                                    FontSize="12"
@@ -154,7 +142,7 @@
                     <TextBlock Text="{Binding ChangePercent, Converter={StaticResource PercentageConverter}}"
                                FontSize="12"
                                Foreground="{Binding PriceChange, Converter={StaticResource PriceChangeColorConverter}}"
-                               HorizontalAlignment="Right"/>
+                               HorizontalAlignment="Center"/>
                 </StackPanel>
             </Grid>
 
@@ -185,7 +173,7 @@
                            Foreground="#FF888888"/>
 
                 <StackPanel Grid.Column="1"
-                        Orientation="Horizontal">
+                            Orientation="Horizontal">
                     <TextBlock Text="{Binding LastUpdate, StringFormat='更新：{0:HH:mm:ss}'}"
                                FontSize="10"
                                Foreground="#FF888888"

@@ -155,21 +155,47 @@ namespace MiniStockWidget.Core.Services
                     if (data.Count < 9) continue; // 確保資料完整
                                                   // TWSE API 欄位順序: 日期,成交股數,成交金額,開盤價,最高價,最低價,收盤價,漲跌價差,成交筆數
 
-                    var dateStr = data[0].Replace("/", "-"); //將 111/01/03 轉換為 111-01-03
+                    var dateStr = data[0]; // 保持原始格式，如 "114/06/02"
                     var closeingPriceStr = data[6].ToString();
                     var volumeStr = data[1];
 
+                    // 轉換民國年為西元年的 DateTime
+                    DateTime date = DateTime.Now; // 預設值
 
-                    // 轉換民國年為西元年
-                    if (DateTime.TryParseExact($"20{dateStr}", "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                    // 處理民國年格式 (114/06/02 或 114-06-02)
+                    var parts = dateStr.Split('/', '-');
+                    if (parts.Length == 3 &&
+                        int.TryParse(parts[0], out var rocYear) &&
+                        int.TryParse(parts[1], out var month) &&
+                        int.TryParse(parts[2], out var day))
                     {
-                        // 如果是民國年格式 (111/01/03)，需要加上 1911
-                        var parts = data[0].Split('/');
-                        if (parts.Length == 3 && int.TryParse(parts[0], out var rocYear) && rocYear < 200)
+                        // 民國年轉西元年：民國年 + 1911
+                        var year = rocYear + 1911;
+
+                        // 驗證日期有效性並建立 DateTime
+                        if (year >= 1912 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
                         {
-                            var year = rocYear + 1911;
-                            date = new DateTime(year, int.Parse(parts[1]), int.Parse(parts[2]));
+                            try
+                            {
+                                date = new DateTime(year, month, day);
+                            }
+                            catch (ArgumentOutOfRangeException ex)
+                            {
+                                _logger.LogWarning(ex, "Invalid date: ROC {RocYear}/{Month}/{Day} -> AD {Year}/{Month}/{Day}",
+                                    rocYear, month, day, year, month, day);
+                                continue; // 跳過這筆無效的資料
+                            }
                         }
+                        else
+                        {
+                            _logger.LogWarning("Invalid date components: ROC {RocYear}/{Month}/{Day}", rocYear, month, day);
+                            continue; // 跳過這筆無效的資料
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Unable to parse date string: {DateStr}", dateStr);
+                        continue; // 跳過這筆無法解析的資料
                     }
 
                     if (decimal.TryParse(closeingPriceStr, out var price) &&

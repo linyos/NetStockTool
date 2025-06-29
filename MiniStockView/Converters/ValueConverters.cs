@@ -15,11 +15,11 @@ namespace MiniStockView.Converters
             if (value is decimal change)
             {
                 if (change > 0)
-                    return new SolidColorBrush(Color.FromRgb(76, 175, 80)); // 綠色
+                    return new SolidColorBrush(Color.FromRgb(244, 67, 54)); // 紅色 - 上漲
                 else if (change < 0)
-                    return new SolidColorBrush(Color.FromRgb(244, 67, 54));  // 紅色
+                    return new SolidColorBrush(Color.FromRgb(76, 175, 80));  // 綠色 - 下跌
                 else
-                    return new SolidColorBrush(Color.FromRgb(158, 158, 158)); // 灰色
+                    return new SolidColorBrush(Color.FromRgb(158, 158, 158)); // 灰色 - 平盤
             }
             return new SolidColorBrush(Colors.Gray);
         }
@@ -59,11 +59,22 @@ namespace MiniStockView.Converters
         {
             if (value is decimal decimalValue)
             {
-                return decimalValue.ToString("C2", culture);
+                // 根據數值大小決定顯示格式
+                if (decimalValue >= 1000)
+                    return $"${decimalValue:N0}"; // 大於 1000 顯示千分位，不顯示小數
+                else if (decimalValue >= 100)
+                    return $"${decimalValue:F1}"; // 100-1000 顯示一位小數
+                else
+                    return $"${decimalValue:F2}"; // 小於 100 顯示兩位小數
             }
             else if (value is double doubleValue)
             {
-                return doubleValue.ToString("C2", culture);
+                if (doubleValue >= 1000)
+                    return $"${doubleValue:N0}";
+                else if (doubleValue >= 100)
+                    return $"${doubleValue:F1}";
+                else
+                    return $"${doubleValue:F2}";
             }
             return value?.ToString() ?? string.Empty;
         }
