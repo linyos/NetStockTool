@@ -25,6 +25,37 @@
 
 
         <ContextMenu x:Key="WindowContextMenu">
+            <MenuItem Header="切換股票">
+                <MenuItem.Icon>
+                    <TextBlock Text="📈"
+                               FontSize="12"/>
+                </MenuItem.Icon>
+                <MenuItem Header="0050 - 元大台灣50"
+                          Command="{Binding SwitchStockCommand}"
+                          CommandParameter="0050.TW">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📊"
+                                   FontSize="10"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="006208 - 富邦台50"
+                          Command="{Binding SwitchStockCommand}"
+                          CommandParameter="006208.TW">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📊"
+                                   FontSize="10"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="2330 - 台積電"
+                          Command="{Binding SwitchStockCommand}"
+                          CommandParameter="2330.TW">
+                    <MenuItem.Icon>
+                        <TextBlock Text="📊"
+                                   FontSize="10"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <Separator/>
             <MenuItem Header="刷新資料"
                       Command="{Binding RefreshCommand}">
                 <MenuItem.Icon>
@@ -70,26 +101,151 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0"
-                            Orientation="Horizontal">
-                    <TextBlock Text="{Binding Symbol}"
-                               FontSize="16"
-                               FontWeight="Bold"
-                               Foreground="White"/>
-                    <TextBlock Text="|"
+                <!-- 股票選擇下拉選單 -->
+                <ComboBox Grid.Column="0"
+                          ItemsSource="{Binding AvailableStocks}"
+                          SelectedItem="{Binding SelectedStock}"
+                          DisplayMemberPath="DisplayName"
+                          Background="#CC1A1A1A"
+                          Foreground="White"
+                          BorderBrush="#FF404040"
+                          BorderThickness="1"
+                          Padding="8,4"
+                          FontSize="12"
+                          MaxWidth="200"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center">
+                    <ComboBox.Resources>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ComboBox">
+                                        <Grid>
+                                            <Border x:Name="Border"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="4"/>
+                                            <ToggleButton x:Name="ToggleButton"
+                                                          Grid.Column="2"
+                                                          Focusable="false"
+                                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                                          ClickMode="Press"
+                                                          Background="Transparent"
+                                                          BorderThickness="0">
+                                                <ToggleButton.Template>
+                                                    <ControlTemplate TargetType="ToggleButton">
+                                                        <Grid Background="Transparent">
+                                                            <ContentPresenter HorizontalAlignment="Left"
+                                                                              VerticalAlignment="Center"
+                                                                              Margin="8,4"/>
+                                                            <Path x:Name="Arrow"
+                                                                  HorizontalAlignment="Right"
+                                                                  VerticalAlignment="Center"
+                                                                  Data="M 0 0 L 4 4 L 8 0 Z"
+                                                                  Fill="White"
+                                                                  Margin="0,0,8,0"/>
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </ToggleButton.Template>
+                                            </ToggleButton>
+                                            <ContentPresenter x:Name="ContentSite"
+                                                              IsHitTestVisible="False"
+                                                              Content="{TemplateBinding SelectionBoxItem}"
+                                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                              Margin="8,4,24,4"
+                                                              VerticalAlignment="Center"
+                                                              HorizontalAlignment="Left"/>
+                                            <Popup x:Name="Popup"
+                                                   Placement="Bottom"
+                                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                                   AllowsTransparency="True"
+                                                   Focusable="False"
+                                                   PopupAnimation="Slide">
+                                                <Grid x:Name="DropDown"
+                                                      SnapsToDevicePixels="True"
+                                                      MinWidth="{TemplateBinding ActualWidth}"
+                                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                    <Border x:Name="DropDownBorder"
+                                                            Background="#CC1A1A1A"
+                                                            BorderThickness="1"
+                                                            BorderBrush="#FF404040"
+                                                            CornerRadius="4"/>
+                                                    <ScrollViewer Margin="1"
+                                                                  SnapsToDevicePixels="True">
+                                                        <StackPanel IsItemsHost="True"
+                                                                    KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                    </ScrollViewer>
+                                                </Grid>
+                                            </Popup>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Background"
+                                    Value="Transparent"/>
+                            <Setter Property="Foreground"
+                                    Value="White"/>
+                            <Setter Property="Padding"
+                                    Value="8,4"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ComboBoxItem">
+                                        <Border x:Name="Border"
+                                                Background="{TemplateBinding Background}"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsHighlighted"
+                                                    Value="True">
+                                                <Setter TargetName="Border"
+                                                        Property="Background"
+                                                        Value="#FF404040"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected"
+                                                    Value="True">
+                                                <Setter TargetName="Border"
+                                                        Property="Background"
+                                                        Value="#FF505050"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ComboBox.Resources>
+                </ComboBox>
+
+                <!-- 公司名稱和股票代號 -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="8,0">
+                    <TextBlock Text="{Binding Symbol, StringFormat='{}{0}'}"
                                FontSize="14"
-                               Foreground="#FF666666"
-                               Margin="8,0"/>
-                    <TextBlock Text="{Binding CompanyName}"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="|"
                                FontSize="12"
+                               Foreground="#FF666666"
+                               Margin="6,0"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding CompanyName}"
+                               FontSize="11"
                                Foreground="#FFCCCCCC"
-                               VerticalAlignment="Bottom"/>
+                               VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- 載入指示器 -->
-                <Grid Grid.Column="1">
+                <Grid Grid.Column="2">
                     <Border Background="#FF333333"
                             CornerRadius="10"
                             Width="20"

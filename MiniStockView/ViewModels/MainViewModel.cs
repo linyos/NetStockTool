@@ -20,6 +20,15 @@ using Microsoft.Extensions.Logging;
 namespace MiniStockView.ViewModels
 {
     /// <summary>
+    /// 股票項目模型
+    /// </summary>
+    public class StockItem
+    {
+        public string Symbol { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+    }
+
+    /// <summary>
     /// 主視窗的 ViewModel
     /// </summary>
     public partial class MainViewModel : ObservableObject
@@ -28,6 +37,33 @@ namespace MiniStockView.ViewModels
         private readonly ILogger<MainViewModel> _logger;
         private readonly DispatcherTimer _timeUpdateTimer;
         private List<HistoricalPrice> _historicalPrices = new();
+
+        /// <summary>
+        /// 可選擇的股票列表
+        /// </summary>
+        public ObservableCollection<StockItem> AvailableStocks { get; } = new()
+        {
+            new StockItem { Symbol = "0050.TW", DisplayName = "0050 - 元大台灣50" },
+            new StockItem { Symbol = "006208.TW", DisplayName = "006208 - 富邦台50" },
+            new StockItem { Symbol = "2330.TW", DisplayName = "2330 - 台積電" }
+        };
+
+        [ObservableProperty]
+        private StockItem? _selectedStock;
+
+        /// <summary>
+        /// 當選中的股票改變時觸發
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        partial void OnSelectedStockChanged(StockItem? value)
+        {
+            if (value != null && value.Symbol != Symbol) // 讀取Symbol
+            {
+                Symbol = value.Symbol;  // 更新Symbol
+                _ = Task.Run(RefreshDataAsync); // 刷新數據
+            }
+        }
 
         [ObservableProperty]
         private string _symbol = "0050.TW"; // 預設股票代號
@@ -92,6 +128,11 @@ namespace MiniStockView.ViewModels
         /// </summary>
         public ICommand CloseCommand { get; }
 
+        /// <summary>
+        /// 切換股票命令
+        /// </summary>
+        public ICommand SwitchStockCommand { get; }
+
         public MainViewModel(IQuoteService quoteService, ILogger<MainViewModel> logger)
         {
             _quoteService = quoteService ?? throw new ArgumentNullException(nameof(quoteService));
@@ -99,6 +140,10 @@ namespace MiniStockView.ViewModels
 
             RefreshCommand = new AsyncRelayCommand(RefreshDataAsync);
             CloseCommand = new RelayCommand(() => System.Windows.Application.Current.Shutdown());
+            SwitchStockCommand = new RelayCommand<string>(SwitchStock);
+
+            // 初始化選中的股票
+            SelectedStock = AvailableStocks.FirstOrDefault();
 
             // 初始化軸配置
             InitializeAxes();
@@ -149,7 +194,7 @@ namespace MiniStockView.ViewModels
             var lineSeries = new LineSeries<ObservablePoint>
             {
                 Values = new ObservableCollection<ObservablePoint>(),
-                Name = "Price:",
+                Name = Symbol,
                 GeometrySize = 4, // Slightly increase the point size for easier tooltip triggering
                 GeometryStroke = new SolidColorPaint(SKColors.DeepSkyBlue) { StrokeThickness = 1.5f },
                 GeometryFill = new SolidColorPaint(SKColors.White),
@@ -321,6 +366,9 @@ namespace MiniStockView.ViewModels
             var lineSeries = Series[0] as LineSeries<ObservablePoint>;
             if (lineSeries?.Values is ObservableCollection<ObservablePoint> values)
             {
+                // 更新系列名稱為當前股票代號
+                lineSeries.Name = Symbol;
+
                 values.Clear();
 
                 // 按時間排序並更新歷史價格數據
@@ -364,6 +412,21 @@ namespace MiniStockView.ViewModels
 
             Symbol = symbol.ToUpper();
             await RefreshDataAsync();
+        }
+
+        /// <summary>
+        /// 切換股票
+        /// </summary>
+        private void SwitchStock(string? symbol)
+        {
+            if (string.IsNullOrWhiteSpace(symbol))
+                return;
+
+            var stock = AvailableStocks.FirstOrDefault(s => s.Symbol == symbol);
+            if (stock != null)
+            {
+                SelectedStock = stock;
+            }
         }
     }
 }
