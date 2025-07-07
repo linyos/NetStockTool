@@ -4,7 +4,10 @@
   "github.copilot.chat.completions.enable": true,
   "github.copilot.chat.codeGeneration.instructions": [
     {
-      "text": "Always response in #zh-tw."
+      "file": "../.github/instructions/general-coding.instructions.md"
+    },
+    {
+      "file": "../.github/instructions/newInstruction.instructions.md"
     }
   ],
   "github.copilot.chat.commitMessageGeneration.instructions": [
@@ -13,6 +16,14 @@
     },
     {
       "text": "Always response in #zh-tw."
+    }
+  ],
+  "github.copilot.chat.reviewSelection.instructions": [
+    {
+      "text": "重點檢查 null reference 和記憶體洩漏問題。"
+    },
+    {
+      "text": "確認是否遵循 SOLID 原則。"
     }
   ],
 }
